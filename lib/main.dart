@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'pages/login_page.dart';
+
 void main() {
   runApp(PWB());
 }
@@ -13,7 +15,14 @@ class _PWBState extends State<PWB> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(),
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.light(
+          primary: Colors.yellow[900],
+          secondary: Colors.yellow[900],
+          
+        ),
+      ),
+      home: LoginPage(),
     );
   }
 }
