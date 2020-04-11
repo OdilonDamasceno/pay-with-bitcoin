@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
+class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  bool _autovalidate = false;
   @override
   Widget build(BuildContext context) {
     var _backgroundColor = Theme.of(context).backgroundColor;
     void _validateInputs() {
       if (_formKey.currentState.validate()) {
-        print('object');
         _formKey.currentState.save();
-      } else {
-        setState(() {
-          _autovalidate = true;
-        });
       }
     }
 
     String _validator(value) {
-      var regex = RegExp(r'^[13][a-km-zA-HJ-NP-Z0-9]{26,33}$');
-      if (!regex.hasMatch(value))
-        return 'Invalid Address';
-      else
-        return 'Valid';
+      var main = RegExp(r'^[13][a-km-zA-HJ-NP-Z0-9]{26,33}$');
+      var test = RegExp(r'^[mn2][a-km-zA-HJ-NP-Z0-9]{26,34}$');
+      if (!main.hasMatch(value) && !test.hasMatch(value)) {
+        return 'Invalid bitcoin address';
+      } else if (test.hasMatch(value)) {
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              content: Text('There is a bitcoin testnet address, continue?'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(color: Colors.red[600]),
+                  ),
+                  onPressed: Navigator.of(context).pop,
+                ),
+                FlatButton(
+                  child: Text('continue'),
+                  onPressed: () {},
+                ),
+              ],
+            ));
+        return "";
+      } else {
+        return "";
+      }
     }
 
     return Material(
@@ -46,6 +57,18 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 18,
           ),
+          Text(
+            'Welcome to new\nPayment\nMethod',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(
+            height: 18,
+          ),
           Form(
             key: _formKey,
             child: TextFormField(
@@ -54,7 +77,6 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: 'Ex.: 1Dfaaklj45oiAxoEwoc93s9ytv92kcsO',
                 labelText: 'Address',
               ),
-              autovalidate: _autovalidate,
             ),
           ),
           SizedBox(
