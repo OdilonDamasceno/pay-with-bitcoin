@@ -15,7 +15,7 @@ class DB {
   final String productsList = "productsList";
 
   static Database _db;
-  Future<Database> get db async {
+  Future<Database> get db async { 
     // If _db exists in memory
     if (_db != null) {
       return _db;

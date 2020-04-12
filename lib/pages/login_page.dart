@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
 import 'package:pay_with_bitcoin/models/user_model.dart';
+import 'package:pay_with_bitcoin/pages/home_page.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -10,8 +11,11 @@ class LoginPage extends StatelessWidget {
     var _backgroundColor = Theme.of(context).backgroundColor;
     var _formController = TextEditingController();
 
-    void _insertUser() async {
+    void _insertUserAndPushPage() async {
       await db.insertUser(new User(_formController.text, ''));
+      Navigator.push(context, MaterialPageRoute(builder: (_) {
+        return HomePage();
+      }));
     }
 
     void _validateInputs() {
@@ -35,7 +39,7 @@ class LoginPage extends StatelessWidget {
             ),
             FlatButton(
               child: Text('continue'),
-              onPressed: _insertUser,
+              onPressed: _insertUserAndPushPage,
             ),
           ],
         ),
@@ -51,7 +55,7 @@ class LoginPage extends StatelessWidget {
         _showDialog();
         return "";
       } else {
-        _insertUser();
+        _insertUserAndPushPage();
         return "";
       }
     }
