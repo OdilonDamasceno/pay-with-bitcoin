@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
     var _formController = TextEditingController();
 
     void _insertUser() async {
-      await db.insertUser(new User(_formController.text, '{}'));
+      await db.insertUser(new User(_formController.text, ''));
     }
 
     void _validateInputs() {
@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
       showDialog(
         context: context,
         child: AlertDialog(
-          content: Text('There is a bitcoin testnet address, continue?'),
+          content: Text('This is a bitcoin testnet address, continue?'),
           actions: <Widget>[
             FlatButton(
               child: Text(
@@ -35,9 +35,7 @@ class LoginPage extends StatelessWidget {
             ),
             FlatButton(
               child: Text('continue'),
-              onPressed: () async {
-                _insertUser();
-              },
+              onPressed: _insertUser,
             ),
           ],
         ),
@@ -61,14 +59,13 @@ class LoginPage extends StatelessWidget {
     return Material(
       child: ListView(
         padding: EdgeInsets.only(top: 200, left: 30, right: 30),
+        primary: false,
         children: <Widget>[
           Center(
             child: CircleAvatar(
               radius: 90,
               backgroundColor: Colors.yellow[800],
-              backgroundImage: NetworkImage(
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/1200px-Bitcoin.svg.png',
-              ),
+              backgroundImage: AssetImage('assets/bitcoin.png'),
             ),
           ),
           SizedBox(
