@@ -1,14 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:pay_with_bitcoin/databases/db_database.dart';
+import 'package:pay_with_bitcoin/models/user_model.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    var db = new DB();
     var _backgroundColor = Theme.of(context).backgroundColor;
+    var _formController = TextEditingController();
+
+    void _insertUser() async {
+      await db.insertUser(new User(_formController.text, '{}'));
+    }
+
     void _validateInputs() {
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
       }
+    }
+
+    void _showDialog() {
+      showDialog(
+        context: context,
+        child: AlertDialog(
+          content: Text('There is a bitcoin testnet address, continue?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'cancel',
+                style: TextStyle(color: Colors.red[600]),
+              ),
+              onPressed: Navigator.of(context).pop,
+            ),
+            FlatButton(
+              child: Text('continue'),
+              onPressed: () async {
+                _insertUser();
+              },
+            ),
+          ],
+        ),
+      );
     }
 
     String _validator(value) {
@@ -17,26 +50,10 @@ class LoginPage extends StatelessWidget {
       if (!main.hasMatch(value) && !test.hasMatch(value)) {
         return 'Invalid bitcoin address';
       } else if (test.hasMatch(value)) {
-        showDialog(
-            context: context,
-            child: AlertDialog(
-              content: Text('There is a bitcoin testnet address, continue?'),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'cancel',
-                    style: TextStyle(color: Colors.red[600]),
-                  ),
-                  onPressed: Navigator.of(context).pop,
-                ),
-                FlatButton(
-                  child: Text('continue'),
-                  onPressed: () {},
-                ),
-              ],
-            ));
+        _showDialog();
         return "";
       } else {
+        _insertUser();
         return "";
       }
     }
@@ -72,6 +89,7 @@ class LoginPage extends StatelessWidget {
           Form(
             key: _formKey,
             child: TextFormField(
+              controller: _formController,
               validator: _validator,
               decoration: InputDecoration(
                 hintText: 'Ex.: 1Dfaaklj45oiAxoEwoc93s9ytv92kcsO',
