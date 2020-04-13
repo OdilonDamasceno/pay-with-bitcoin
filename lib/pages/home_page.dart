@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
 import 'package:pay_with_bitcoin/pages/add_item_page.dart';
@@ -41,10 +43,11 @@ class _HomePageState extends State<HomePage> {
                         child: CustomRichText(
                           simpleText: "Without itens",
                           presText: "Add Item",
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => AddItem()),
-                          ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => AddItem()),
+                            );
+                          },
                           pressStyle: TextStyle(
                             color: Colors.yellow[900],
                             fontSize: 20,
@@ -57,6 +60,7 @@ class _HomePageState extends State<HomePage> {
                   : ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (_, index) {
+                        var _image = FileImage(File(snapshot.data[index]['image']));
                         return Container(
                           height: 260,
                           child: Card(
@@ -73,9 +77,7 @@ class _HomePageState extends State<HomePage> {
                                         borderRadius: BorderRadius.circular(5),
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                            'https://img.elo7.com.br/product/original/22565B3/adesivo-parede-prato-comida-frango-salada-restaurante-lindo-adesivo-parede.jpg',
-                                          ),
+                                          image: _image,
                                         ),
                                       ),
                                     ),
@@ -134,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     )
-              : CircularProgressIndicator();
+              : Center(child: CircularProgressIndicator());
         },
       ),
       Material(
@@ -155,7 +157,14 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
-      body: _body[_currentIndex],
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future<void>(() {
+            setState(() {});
+          });
+        },
+        child: _body[_currentIndex],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           for (int i = 1; i <= 10; i++) {

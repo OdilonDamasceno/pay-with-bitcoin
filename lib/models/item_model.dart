@@ -1,7 +1,7 @@
 class Item {
   String _name;
   String _description;
-  String _price;
+  double _price;
   String _image;
   Item(
     this._description,
@@ -17,7 +17,7 @@ class Item {
   }
   String get name => _name;
   String get description => _description;
-  String get price => _price;
+  double get price => _price;
   String get image => _image;
 
   Map<String, dynamic> toMap() {
