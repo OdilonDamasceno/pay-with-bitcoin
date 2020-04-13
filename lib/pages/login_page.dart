@@ -12,7 +12,7 @@ class LoginPage extends StatelessWidget {
     var _formController = TextEditingController();
 
     void _insertUserAndPushPage() async {
-      await db.insertUser(new User(_formController.text, ''));
+      await db.insertUser(new User(_formController.text));
       Navigator.push(context, MaterialPageRoute(builder: (_) {
         return HomePage();
       }));

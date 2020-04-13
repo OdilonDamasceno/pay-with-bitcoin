@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
+import 'package:pay_with_bitcoin/pages/add_item_page.dart';
 import 'package:pay_with_bitcoin/widgets/rich.text.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,34 +27,142 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: db.getUser(1),
+    final _body = <Widget>[
+      FutureBuilder(
+        future: db.getProduct(),
         builder: (_, snapshot) {
-          return snapshot.data.productsList == ''
-              ? Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height / 2.3,
-                    ),
-                    child: CustomRichText(
-                      simpleText: "Without itens",
-                      presText: "Add Item",
-                      onTap: () {},
-                      pressStyle: TextStyle(
-                        color: Colors.yellow[900],
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+          return snapshot.hasData
+              ? snapshot.data.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height / 2.3,
+                        ),
+                        child: CustomRichText(
+                          simpleText: "Without itens",
+                          presText: "Add Item",
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => AddItem()),
+                          ),
+                          pressStyle: TextStyle(
+                            color: Colors.yellow[900],
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          simpleStyle: TextStyle(fontSize: 15),
+                        ),
                       ),
-                      simpleStyle: TextStyle(fontSize: 15),
-                    ),
-                  ),
-                )
-              : Center(child: CircularProgressIndicator());
+                    )
+                  : ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (_, index) {
+                        return Container(
+                          height: 260,
+                          child: Card(
+                            margin: EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Column(
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                            'https://img.elo7.com.br/product/original/22565B3/adesivo-parede-prato-comida-frango-salada-restaurante-lindo-adesivo-parede.jpg',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    '${snapshot.data[index]['name']}',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            '${snapshot.data[index]['price']} BTC',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 18),
+                                          ),
+                                          Container(
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.yellow[900],
+                                            ),
+                                            child: FlatButton(
+                                              onPressed: () {},
+                                              child: Text(
+                                                'BUY',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+              : CircularProgressIndicator();
         },
       ),
+      Material(
+        child: Center(
+          child: FloatingActionButton(
+            heroTag: Object(),
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => AddItem()));
+            },
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    ];
+
+    return Scaffold(
+      body: _body[_currentIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          for (int i = 1; i <= 10; i++) {
+            db.deleteItem(i);
+          }
+          setState(() {});
+        },
         child: Icon(
           Icons.shopping_cart,
           color: Colors.white,
