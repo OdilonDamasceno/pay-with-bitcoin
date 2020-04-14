@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
 import 'package:pay_with_bitcoin/pages/add_item_page.dart';
+import 'package:pay_with_bitcoin/pages/details_page.dart';
 import 'package:pay_with_bitcoin/widgets/rich.text.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,8 +27,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  _detailsPage(int index) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => Details(
+        index: index,
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final _pixel= MediaQuery.of(context).size.height / MediaQuery.of(context).size.width;
     final _body = <Widget>[
       FutureBuilder(
         future: db.getProduct(),
@@ -38,39 +47,45 @@ class _HomePageState extends State<HomePage> {
                   ? Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height / 2.3,
+                          vertical: _pixel*173,
                         ),
-                        child: CustomRichText(
-                          simpleText: "Without itens",
-                          presText: "Add Item",
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => AddItem()),
-                            );
-                          },
-                          pressStyle: TextStyle(
-                            color: Colors.yellow[900],
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        child: Center(
+                          child: CustomRichText(
+                            simpleText: "Without itens",
+                            presText: "Add Item",
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => AddItem()),
+                              );
+                            },
+                            pressStyle: TextStyle(
+                              color: Colors.yellow[900],
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            simpleStyle: TextStyle(fontSize: 15),
                           ),
-                          simpleStyle: TextStyle(fontSize: 15),
                         ),
                       ),
                     )
                   : ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (_, index) {
-                        var _image = FileImage(File(snapshot.data[index]['image']));
+                        var _image =
+                            FileImage(File(snapshot.data[index]['image']));
                         return Container(
                           height: 260,
                           child: Card(
+                            elevation: 2,
                             margin: EdgeInsets.all(10),
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Column(
                                 children: <Widget>[
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      _detailsPage(index);
+                                    },
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(

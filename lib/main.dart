@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pay_with_bitcoin/pages/home_page.dart';
-
 import 'databases/db_database.dart';
 import 'pages/login_page.dart';
 

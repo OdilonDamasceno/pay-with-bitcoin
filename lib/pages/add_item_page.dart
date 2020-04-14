@@ -106,7 +106,7 @@ class _AddItemState extends State<AddItem> {
                 validator: _validator,
                 expands: true,
                 maxLines: null,
-                maxLength: 255,
+                maxLength: 500,
                 minLines: null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
