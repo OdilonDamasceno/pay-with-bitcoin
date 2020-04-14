@@ -34,6 +34,9 @@ class _PWBState extends State<PWB> {
               : LoginPage();
         },
       ),
+      routes: {
+        '/home': (context) => HomePage(),
+      },
     );
   }
 }

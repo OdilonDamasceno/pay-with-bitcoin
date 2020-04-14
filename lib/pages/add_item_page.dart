@@ -78,7 +78,7 @@ class _AddItemState extends State<AddItem> {
         elevation: 0,
         leading: FlatButton(
             onPressed: () {
-              Navigator.of(context).popAndPushNamed('/');
+              Navigator.of(context).popAndPushNamed('/home');
             },
             child: Icon(Icons.arrow_back)),
       ),
@@ -89,6 +89,7 @@ class _AddItemState extends State<AddItem> {
           padding: EdgeInsets.all(20),
           children: <Widget>[
             TextFormField(
+              maxLength: 36,
               controller: _nameController,
               validator: _validator,
               decoration: InputDecoration(
@@ -99,19 +100,13 @@ class _AddItemState extends State<AddItem> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              height: 200,
-              child: TextFormField(
-                controller: _descriptionController,
-                validator: _validator,
-                expands: true,
-                maxLines: null,
-                maxLength: 500,
-                minLines: null,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Description',
-                ),
+            TextFormField(
+              controller: _descriptionController,
+              validator: _validator,
+              maxLines: 20,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Description',
               ),
             ),
             SizedBox(
@@ -125,6 +120,7 @@ class _AddItemState extends State<AddItem> {
                   return 'Invalid value';
                 }
               },
+              maxLength: 10,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Value',

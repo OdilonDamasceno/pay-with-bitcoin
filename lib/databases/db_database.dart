@@ -42,7 +42,7 @@ class DB {
         'CREATE TABLE $userTable($colId INTEGER PRIMARY KEY,"$colAddress" TEXT)');
     await db.execute(
         'CREATE TABLE $productTable($colId INTEGER PRIMARY KEY, "$productName" TEXT,'
-        ' "$productDescription" TEXT, "$productImage" TEXT, "$productValue" REAL)');
+        ' "$productDescription" TEXT, "$productImage" TEXT, "$productValue" TEXT)');
   }
 
   Future<int> insertUser(User user) async {

@@ -37,7 +37,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _pixel= MediaQuery.of(context).size.height / MediaQuery.of(context).size.width;
+    final _pixel =
+        MediaQuery.of(context).size.height / MediaQuery.of(context).size.width;
     final _body = <Widget>[
       FutureBuilder(
         future: db.getProduct(),
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
                   ? Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          vertical: _pixel*173,
+                          vertical: _pixel * 173,
                         ),
                         child: Center(
                           child: CustomRichText(
@@ -73,6 +74,8 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (_, index) {
                         var _image =
                             FileImage(File(snapshot.data[index]['image']));
+                        double _value =
+                            double.parse(snapshot.data[index]['price']);
                         return Container(
                           height: 260,
                           child: Card(
@@ -119,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            '${snapshot.data[index]['price']} BTC',
+                                            '$_value BTC',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 18),
@@ -143,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                                         ],
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
