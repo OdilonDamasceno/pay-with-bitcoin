@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
-import 'package:pay_with_bitcoin/models/item_model.dart';
+import 'package:pay_with_bitcoin/models/list_model.dart';
 
 class Details extends StatelessWidget {
   final db = new DB();
+  final list = ListItens();
   final int index;
   Details({this.index});
 
@@ -70,11 +72,19 @@ class Details extends StatelessWidget {
                                 children: <Widget>[
                                   Align(
                                     alignment: Alignment.center,
-                                    child: Text(
-                                      item['name'],
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
+                                    child: Container(
+                                      height: 20,
+                                      child: Marquee(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        pauseAfterRound: Duration(seconds: 1),
+                                        blankSpace: 330,
+                                        text: item['name'],
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                        ),
+                                        scrollAxis: Axis.horizontal,
                                       ),
                                     ),
                                   ),
@@ -134,7 +144,9 @@ class Details extends StatelessWidget {
                               'Add to Cart',
                               style: TextStyle(color: Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              list.add(index);
+                            },
                           ),
                         ),
                       ],

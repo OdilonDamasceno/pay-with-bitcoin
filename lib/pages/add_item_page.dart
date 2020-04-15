@@ -30,6 +30,7 @@ class _AddItemState extends State<AddItem> {
     if (value.isEmpty) {
       return "It cannot be empty";
     }
+    return null;
   }
 
   @override
@@ -44,11 +45,12 @@ class _AddItemState extends State<AddItem> {
         ),
       );
 
-      _descriptionController.text = '';
-      _nameController.text = '';
-      _valueController.text = '';
-      _image = null;
-      setState(() {});
+      setState(() {
+        _descriptionController.text = '';
+        _nameController.text = '';
+        _valueController.text = '';
+        _image = null;
+      });
     }
 
     void _validateInputs() {
@@ -89,7 +91,6 @@ class _AddItemState extends State<AddItem> {
           padding: EdgeInsets.all(20),
           children: <Widget>[
             TextFormField(
-              maxLength: 36,
               controller: _nameController,
               validator: _validator,
               decoration: InputDecoration(
@@ -119,6 +120,7 @@ class _AddItemState extends State<AddItem> {
                 if (!(double.tryParse(value.replaceAll(',', '.')) is double)) {
                   return 'Invalid value';
                 }
+                return null;
               },
               maxLength: 10,
               decoration: InputDecoration(

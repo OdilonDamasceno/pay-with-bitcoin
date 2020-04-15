@@ -7,13 +7,8 @@ void main() {
   runApp(PWB());
 }
 
-class PWB extends StatefulWidget {
-  @override
-  _PWBState createState() => _PWBState();
-}
-
-class _PWBState extends State<PWB> {
-  var db = new DB();
+class PWB extends StatelessWidget {
+  final db = new DB();
 
   @override
   Widget build(BuildContext context) {

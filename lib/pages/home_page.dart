@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
+import 'package:pay_with_bitcoin/models/list_model.dart';
 import 'package:pay_with_bitcoin/pages/add_item_page.dart';
+import 'package:pay_with_bitcoin/pages/cart_page.dart';
 import 'package:pay_with_bitcoin/pages/details_page.dart';
 import 'package:pay_with_bitcoin/widgets/rich.text.dart';
 
@@ -11,7 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var db = new DB();
+  final db = new DB();
+  var _list = new ListItens();
   int _currentIndex = 0;
 
   List<BottomNavigationBarItem> _item() {
@@ -103,11 +107,20 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                    '${snapshot.data[index]['name']}',
-                                    style: TextStyle(
+                                  Container(
+                                    height: 20,
+                                    child: Marquee(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      pauseAfterRound: Duration(seconds: 1),
+                                      blankSpace: 330,
+                                      text: snapshot.data[index]['name'],
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w500,
-                                        fontSize: 16),
+                                        fontSize: 16,
+                                      ),
+                                      scrollAxis: Axis.horizontal,
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 10,
@@ -135,7 +148,9 @@ class _HomePageState extends State<HomePage> {
                                               color: Colors.yellow[900],
                                             ),
                                             child: FlatButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                _list.add(index);
+                                              },
                                               child: Text(
                                                 'BUY',
                                                 style: TextStyle(
@@ -175,20 +190,12 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () {
-          return Future<void>(() {
-            setState(() {});
-          });
-        },
-        child: _body[_currentIndex],
-      ),
+      body: _body[_currentIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          for (int i = 1; i <= 10; i++) {
-            db.deleteItem(i);
-          }
-          setState(() {});
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => CartPage(),
+          ));
         },
         child: Icon(
           Icons.shopping_cart,
