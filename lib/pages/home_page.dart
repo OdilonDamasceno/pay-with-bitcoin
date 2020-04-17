@@ -149,7 +149,8 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                             child: FlatButton(
                                               onPressed: () {
-                                                _list.add(index);
+                                                _list.add(
+                                                    index, _value.toString());
                                               },
                                               child: Text(
                                                 'BUY',

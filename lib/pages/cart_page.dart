@@ -1,8 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:marquee/marquee.dart';
 import 'package:pay_with_bitcoin/databases/db_database.dart';
 import 'package:pay_with_bitcoin/models/list_model.dart';
+import 'package:pay_with_bitcoin/models/user_model.dart';
+import 'package:pay_with_bitcoin/repositories/value_repo.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:web_socket_channel/io.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -11,9 +16,15 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final db = new DB();
-
+  User user;
   @override
   Widget build(BuildContext context) {
+    final channel = IOWebSocketChannel.connect(
+      'wss://testnet-ws.smartbit.com.au/v1/blockchain',
+      pingInterval: Duration(seconds: 20),
+    );
+    var stream = channel.stream;
+
     final list = ListItens();
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +43,92 @@ class _CartPageState extends State<CartPage> {
               width: double.infinity,
               child: FloatingActionButton(
                 isExtended: true,
-                onPressed: () {},
+                onPressed: () async {
+                  user = await db.getUser(1);
+                  channel.sink.add(
+                    '{"type":"address","address":"${user.address}"}',
+                  );
+                  setState(
+                    () {
+                      showDialog(
+                        context: context,
+                        child: AlertDialog(
+                          content: StreamBuilder(
+                              stream: stream,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  if (Value().getData(snapshot, user.address) >=
+                                      list.finalPrice()) {
+                                    SchedulerBinding.instance
+                                        .addPostFrameCallback(
+                                            (_) => setState(() {
+                                                  list.clear();
+                                                }));
+
+                                    return Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3.5,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.green,
+                                          size: 200,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3.5,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text(
+                                              'Final price is: ${list.finalPrice()}'),
+                                          Center(
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  5.5,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  5.5,
+                                              child: QrImage(
+                                                data:
+                                                    'bitcoin:${user.address}?amount=${list.finalPrice()}',
+                                                version: QrVersions.auto,
+                                                size: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          Text('Or send to: ${user.address}')
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  return Container(
+                                      height: 200,
+                                      child: Center(
+                                          child: CircularProgressIndicator()));
+                                }
+                              }),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('close'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
                 child: Text(
                   'Checkout',
                   style: TextStyle(color: Colors.white),

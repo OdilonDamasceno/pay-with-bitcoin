@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:pay_with_bitcoin/models/invoice_model.dart';
 import 'package:pay_with_bitcoin/models/item_model.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/user_model.dart';
@@ -18,7 +19,8 @@ class DB {
   final String productValue = "price";
   final String productDescription = "description";
   final String productImage = "image";
-
+  final String invoiceTable = 'invoiceTable';
+  final String productList = 'productList';
   static Database _db;
   Future<Database> get db async {
     // If _db exists in memory
@@ -43,6 +45,9 @@ class DB {
     await db.execute(
         'CREATE TABLE $productTable($colId INTEGER PRIMARY KEY, "$productName" TEXT,'
         ' "$productDescription" TEXT, "$productImage" TEXT, "$productValue" TEXT)');
+    await db.execute(
+      'CREATE TABLE $invoiceTable($colId INTEGER PRIMARY KEY, $productName TEXT, $productValue TEXT, $productList TEXT)',
+    );
   }
 
   Future<int> insertUser(User user) async {
@@ -55,6 +60,12 @@ class DB {
   Future<int> insertNewItem(Item item) async {
     var dbClient = await db;
     int res = await dbClient.insert("$productTable", item.toMap());
+    return res;
+  }
+
+  Future<int> insertInvoice(Invoice invoice) async {
+    var dbClient = await db;
+    int res = await dbClient.insert('$invoiceTable', invoice.toMap());
     return res;
   }
 

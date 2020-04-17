@@ -5,8 +5,8 @@ class ListItens {
 
   final List<Map> list = <Map>[];
 
-  void add(int value) {
-    list.add(Map.from({'value': value, 'index': list.length}));
+  void add(int index, String price) {
+    list.add(Map.from({'value': index, 'index': list.length, 'price': price}));
   }
 
   int remove(int value) {
@@ -19,5 +19,18 @@ class ListItens {
         return i;
       }
     }
+    return 0;
+  }
+
+  double finalPrice() {
+    double price = 0;
+    for (var i = 0; i < list.length; i++) {
+      price += double.tryParse(list[i]['price']);
+    }
+    return double.tryParse(price.toStringAsFixed(8));
+  }
+
+  void clear() {
+    list.clear();
   }
 }
