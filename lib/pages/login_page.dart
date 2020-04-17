@@ -11,8 +11,8 @@ class LoginPage extends StatelessWidget {
     var _backgroundColor = Theme.of(context).backgroundColor;
     var _formController = TextEditingController();
 
-    void _insertUserAndPushPage() async {
-      await db.insertUser(new User(_formController.text));
+    void _insertUserAndPushPage({String isTestnet}) async {
+      await db.insertUser(new User(_formController.text, isTestnet));
       Navigator.push(context, MaterialPageRoute(builder: (_) {
         return HomePage();
       }));
@@ -39,7 +39,9 @@ class LoginPage extends StatelessWidget {
             ),
             FlatButton(
               child: Text('continue'),
-              onPressed: _insertUserAndPushPage,
+              onPressed: () {
+                _insertUserAndPushPage(isTestnet: 'true');
+              },
             ),
           ],
         ),
@@ -55,7 +57,7 @@ class LoginPage extends StatelessWidget {
         _showDialog();
         return "";
       } else {
-        _insertUserAndPushPage();
+        _insertUserAndPushPage(isTestnet: 'false');
         return "";
       }
     }

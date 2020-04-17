@@ -21,6 +21,8 @@ class DB {
   final String productImage = "image";
   final String invoiceTable = 'invoiceTable';
   final String productList = 'productList';
+  final String isTestnet = 'isTestnet';
+
   static Database _db;
   Future<Database> get db async {
     // If _db exists in memory
@@ -41,7 +43,7 @@ class DB {
 
   void _onCreate(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE $userTable($colId INTEGER PRIMARY KEY,"$colAddress" TEXT)');
+        'CREATE TABLE $userTable($colId INTEGER PRIMARY KEY,"$colAddress" TEXT, "$isTestnet" TEXT)');
     await db.execute(
         'CREATE TABLE $productTable($colId INTEGER PRIMARY KEY, "$productName" TEXT,'
         ' "$productDescription" TEXT, "$productImage" TEXT, "$productValue" TEXT)');

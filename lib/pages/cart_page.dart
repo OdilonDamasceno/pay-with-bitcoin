@@ -16,14 +16,26 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final db = new DB();
-  User user;
+
   @override
   Widget build(BuildContext context) {
-    final channel = IOWebSocketChannel.connect(
-      'wss://testnet-ws.smartbit.com.au/v1/blockchain',
-      pingInterval: Duration(seconds: 20),
-    );
-    var stream = channel.stream;
+    User user;
+    IOWebSocketChannel channel;
+    Stream stream;
+
+    Future<void> createConnection() async {
+      user = await db.getUser(1);
+      channel = IOWebSocketChannel.connect(
+        user.isTestnet == 'true'
+            ? 'wss://testnet-ws.smartbit.com.au/v1/blockchain'
+            : 'wss://ws.smartbit.com.au/v1/blockchain',
+        pingInterval: Duration(seconds: 20),
+      );
+      channel.sink.add(
+        '{"type":"address","address":"${user.address}"}',
+      );
+      stream = channel.stream;
+    }
 
     final list = ListItens();
     return Scaffold(
@@ -44,10 +56,7 @@ class _CartPageState extends State<CartPage> {
               child: FloatingActionButton(
                 isExtended: true,
                 onPressed: () async {
-                  user = await db.getUser(1);
-                  channel.sink.add(
-                    '{"type":"address","address":"${user.address}"}',
-                  );
+                  await createConnection();
                   setState(
                     () {
                       showDialog(
